@@ -21,37 +21,10 @@
   <component name="ChangeListManager">
     <list default="true" id="05f0a880-38c0-4f6c-bf09-7b46f35f2a31" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/App.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/App/App.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/App/App.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/App/App.test.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Component/Center.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Component/Divider.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Component/Header.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Component/Navbar.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Sample.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Header.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/PageHeader.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Popup.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/SideMenu.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/controls/ActionButton.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/controls/Button.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/controls/Checkbox.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/controls/Controls.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/controls/DatePicker.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/controls/Input.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/controls/RadioGroup.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/controls/Select.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/useForm.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/useTable.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/index.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/Employees/EmployeeForm.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/Employees/Employees.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/reportWebVitals.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/services/employeeService.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/setupTests.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/table.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/table.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -82,15 +55,15 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="ts.external.directory.path" value="C:\Program Files\JetBrains\WebStorm 2020.1.2\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="E:\pro\flemint_assignment" />
       <recent name="E:\pro\flemint_assignment\src" />
+      <recent name="E:\pro\flemint_assignment" />
     </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -106,6 +79,7 @@
       <workItem from="1603612771233" duration="13807000" />
       <workItem from="1603693846114" duration="770000" />
       <workItem from="1603702933748" duration="6513000" />
+      <workItem from="1603737333525" duration="3660000" />
     </task>
     <servers />
   </component>
