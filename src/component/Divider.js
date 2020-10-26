@@ -6,9 +6,9 @@ const Dividers = () => {
 
     return (
         <div>
-            <p style={{fontFamily: 'Roboto', margin: '20px'}}><Divider /></p>
+            <p style={{fontFamily: 'Roboto', marginTop: '50px'}}><Divider /></p>
 
-            <p style={{fontFamily: 'Roboto', fontSize: "15px"}}>@{date.getFullYear()} Blue Tac</p>
+            <p style={{fontFamily: 'Roboto', fontSize: "13px"}}>@{date.getFullYear()} Blue Tac</p>
 
         </div>
     )
