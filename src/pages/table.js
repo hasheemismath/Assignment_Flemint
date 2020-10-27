@@ -2,7 +2,9 @@ import {Divider, Grid, IconButton, makeStyles } from '@material-ui/core';
 import React, {useEffect, useState} from 'react';
 
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
-import {getData} from "../apiReq/helper";
+import {deleteData, getData} from "../apiReq/helper";
+import moment from "moment";
+
 const useStyles = makeStyles((theme) => ({
 
     buttonNext:{
@@ -48,7 +50,24 @@ const Table = () => {
 
     const deleteItem = i=>{
         console.log(i)
+        deleteData(i)
+            .then(res=>{
+                if(res.error){
+                    setError(data.error)
+                }else{
+                    loadAllData()
+                    console.log(res.data.message)
+                }
+
+            })
     }
+
+    const changeDate = (date)=>{
+        const setDate= moment(date).format("MMM YYYY");
+        return setDate;
+    }
+
+
     return (
         <div>
             <header>
@@ -81,14 +100,17 @@ const Table = () => {
                             </Grid>
                             <Grid item xs={5} md={7}>
                                 <div className={classes.tableItem}>
-                                    {getData.period}
+                                    {getData.is_currently ? changeDate(getData.period) + ' -'+ ` Now` : changeDate(getData.period) + ' - ' + changeDate(getData.through)}
+
+                                    {/*{getData.is_currently ? changeDate(getData.period) - "now" : changeDate(getData.period) - changeDate(getData.through)}*/}
+                                    {/*{changeDate(getData.period)} - {changeDate(getData.through)}*/}
                                 </div>
                             </Grid>
                             <Grid item xs={1}>
                                 <div className={classes.tableItem}>
                                     <div className={classes.buttonNext}>
                                         <IconButton aria-label="delete" className={classes.delete}>
-                                            <DeleteOutlineIcon fontSize="small" onClick={()=>deleteItem(index)} />
+                                            <DeleteOutlineIcon fontSize="small" onClick={()=>deleteItem(getData._id)} />
                                         </IconButton>
                                     </div>
                                 </div>

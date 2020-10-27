@@ -1,9 +1,15 @@
 import { Backdrop, Button, Checkbox, Divider, Fade, FormControl, FormControlLabel, Grid, IconButton, InputBase,  makeStyles, Modal, Select, TextareaAutosize, TextField, Typography, withStyles } from '@material-ui/core';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { Link } from 'react-router-dom';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import SideBar from "../sideBar";
 import Table from "../table";
+import FormDropdown from "../../common/FormDropdown";
+import FormField from "../../common/FormField";
+import {countries} from "../../common/countries";
+import {postData} from "../../apiReq/helper";
+import Alert from '@material-ui/lab/Alert';
+
 const useStyles = makeStyles((theme) => ({
 
     containerMenu: { 
@@ -83,39 +89,35 @@ const useStyles = makeStyles((theme) => ({
     }
   }));
 
-  const BootstrapInput = withStyles((theme) => ({
-    root: {
-      'label + &': {
-        marginTop: theme.spacing(3),
-      },
-    },
-    input: {
-      borderRadius: 4,
-      position: 'relative',
-      backgroundColor: theme.palette.background.paper,
-      border: '1px solid #ced4da',
-      fontSize: 16,
-      padding: '10px 26px 10px 12px',
-      transition: theme.transitions.create(['border-color', 'box-shadow']),
-      // Use the system font instead of the default Roboto font.
-      fontFamily: [
-     
-        'Roboto',
-       
-      ].join(','),
-      '&:focus': {
-        borderRadius: 4,
-        borderColor: '#80bdff',
-        boxShadow: '0 0 0 0.2rem rgba(0,123,255,.25)',
-      },
-    },
-  }))(InputBase);
-
-
 
 const Demo = () => {
     const classes = useStyles();
+
+    const [values, setValues] = useState({
+        company: "",
+        title: "",
+        description: "",
+        period:"",
+        period_year: "",
+        period_month:"",
+        is_currently:false,
+        country:"",
+        through:"",
+        through_month: "",
+        through_year:"",
+        locations: [],
+        location: "",
+        loading: false,
+        error: false,
+        isSuccess:false,
+        success:"",
+        createdEmp: "",
+        getaRedirect: false,
+        formData: ""
+    });
+
     const [open, setOpen] = React.useState(false);
+    const [loadings, setLoading] = useState(true);
 
   const handleOpen = () => {
     setOpen(true);
@@ -123,20 +125,164 @@ const Demo = () => {
 
   const handleClose = () => {
     setOpen(false);
+    setChecked(false)
+    setValues({...values,company: "",description: "",title: "",location: "",through: "",period: "",loading: false,error: false,isSuccess: false,is_currently: false})
+};
+    const thisYear = (new Date()).getFullYear();
+
+    const minOffset = 0;
+    const maxOffset = 60;
+
+  const handleChange = name =>event => {
+    const value = event.target.value;
+    setValues({ ...values, [name]: value});
   };
 
-  const [state, setState] = React.useState({
-    age: '',
-    name: 'hai',
-  });
+   const [isCheck,setChecked] = useState(false);
 
-  const handleChange = (event) => {
-    const name = event.target.name;
-    setState({
-      ...state,
-      [name]: event.target.value,
+
+
+    const handleSubmit = (evt) => {
+        evt.preventDefault();
+
+        setLoading(false);
+
+        values.period = `${values.period_year}-${values.period_month}`;
+
+        if(!is_currently){
+            values.through = `${values.through_year}-${values.through_month}`;
+        }
+        else{
+            values.through="";
+        }
+
+        setValues({...values})
+
+        postData(values)
+            .then(data=>{
+                console.log(data)
+                if(data.status===400){
+                    setValues({...values,error: true,isSuccess: false})
+                    console.log(error)
+                }else{
+                    setValues({...values,company: "",description: "",title: "",location: "",through: "",period: "",loading: false,success: data.message,error: false,isSuccess: true,is_currently: false})
+                    handleClose();
+                    setLoading(true)
+                }
+            })
+            .catch(e=>{
+                console.log(e)
+            })
+
+        console.log(values);
+    }
+
+    const saveAndMore =(event)=>{
+        event.preventDefault();
+
+        setLoading(false);
+
+        values.period = `${values.period_year}-${values.period_month}`;
+
+        if(!is_currently){
+            values.through = `${values.through_year}-${values.through_month}`;
+        }
+        else{
+            values.through="";
+        }
+
+        setValues({...values})
+
+        postData(values)
+            .then(data=>{
+                console.log(data)
+                if(data.status===400){
+                    setValues({...values,error: true,isSuccess: false})
+                    console.log(error)
+                }else{
+                    setValues({...values,company: "",description: "",title: "",location: "",country: "",through: "",period: "",loading: false,success: data.message,error: false,isSuccess: true})}
+                    setLoading(true);
+
+            })
+            .catch(e=>{
+                console.log(e)
+            })
+
+        console.log(values);
+    }
+
+    const tableContent = ()=>{
+        return (<Table/>)
+    }
+
+    const checkClick = ()=>{
+        setChecked(!isCheck);
+        setValues({...values,is_currently: !is_currently})
+    }
+
+    const options = [];
+    const monthOptions = [];
+
+    for (let i = minOffset; i <= maxOffset; i++) {
+        const year = thisYear - i;
+        options.push(<option value={year}>{year}</option>);
+    }
+    const months = [
+        {id:1,month:"January"},
+        {id:2,month:"February"},
+        {id:3,month:"March"},
+        {id:4,month:"April"},
+        {id:5,month:"May"},
+        {id:6,month:"June"},
+        {id:7,month:"July"},
+        {id:8,month:"August"},
+        {id:9,month:"September"},
+        {id:10,month:"October"},
+        {id:11,month:"November"},
+        {id:12,month:"December"}
+    ]
+
+    months.forEach(result=>{
+        monthOptions.push(<option value={result.id}>{result.month}</option>)
     });
-  };
+
+    const countriesArray =[]
+
+    countries.forEach(res=>{
+        countriesArray.push(<option value={ res.value}>{res.label}</option>)
+    })
+
+
+
+    const {
+        company,
+        title,
+        description,
+        location,
+        period,
+        loading,
+        success,
+        is_currently,
+        error,
+        isSuccess,
+        createdEmp,
+        getaRedirect,
+        formData
+    } = values;
+
+
+    const errorMessage = ()=>{
+        if(error){
+            return (<Alert severity="error">Fields should not be empty!</Alert>)
+        }
+    }
+
+    const successMessage = ()=>{
+        if(isSuccess){
+            return (<Alert severity="success">Successfully Saved</Alert>)
+        }
+    }
+
 
    
    return (
@@ -162,7 +308,7 @@ const Demo = () => {
                 <small>Add Employment</small>
               </Button>
 
-                <Table/>
+                {loadings && tableContent()}
 
                  <Link to='/' className={classes.linkPrimary}>Skip this step for now</Link>
 
@@ -182,7 +328,6 @@ const Demo = () => {
                                       <small>Next</small>
                                    </Button>
                             </div>
-
                      </Grid>
                     </Grid>
 
@@ -203,110 +348,39 @@ const Demo = () => {
             <Fade in={open}>
               <div className={classes.paper}>
                 <h2 id="transition-modal-title">Add Employment</h2>
-                <form className={classes.root} noValidate autoComplete="off">
+                <form onSubmit={handleSubmit} className={classes.root} noValidate autoComplete="off">
                     <Grid container>
                      <Grid item xs='12'>
                       <Typography variant='h6'><small>Company</small></Typography>
-                     <TextField   variant="outlined" size="small" className={classes.input} />
+                      <FormField value={company} onChange={handleChange("company")}  variant={"outlined"} size={"small"} className={classes.input}/>
                      </Grid>
-
                       <div style={{width: '100%',}}>
                       <Typography variant='h6'><small>Location</small></Typography>
                      <Grid item xs='12' className={classes.formGroup}>
-                     <Grid item xs='6'>
-                     <TextField  label='City'  variant="outlined" size="small" className={classes.input} />
+                     <Grid item xs='6' style={{marginRight:'25px'}}>
+                        <FormField value={location} onChange={handleChange("location")}  label={"city"} variant={"outlined"} size={"small"} className={classes.input}/>
                      </Grid>
                      <Grid item xs='6'>
-                     <FormControl variant="outlined"  size='small' className={classes.formControl}>
-
-                        <Select
-                        className={classes.marginLeft}
-                          native
-                          value={state.age}
-                          onChange={handleChange}
-                          label="Age"
-                          inputProps={{
-                            name: 'age',
-                            id: 'outlined-age-native-simple',
-                          }}
-                           input={<BootstrapInput />}
-                        >
-                          <option aria-label="None" value="" />
-                          <option value={10}>Ten</option>
-                          <option value={20}>Twenty</option>
-                          <option value={30}>Thirty</option>
-                        </Select>
-                      </FormControl>
+                         <FormDropdown name={"United States"} option={countriesArray}  onChange={handleChange("country")} />
                      </Grid>
                      </Grid>
                       </div>
                       <Grid item xs='12'>
                       <Typography variant='h6'><small>Title</small></Typography>
-                     <FormControl variant="outlined"  size='small' className={classes.formControl}>
 
-                        <Select
-                          native
-                          value={state.age}
-                          onChange={handleChange}
-                          label="Age"
-                          inputProps={{
-                            name: 'age',
-                            id: 'outlined-age-native-simple',
-                          }}
-                           input={<BootstrapInput />}
-                        >
-                          <option aria-label="None" value="" />
-                          <option value={10}>Ten</option>
-                          <option value={20}>Twenty</option>
-                          <option value={30}>Thirty</option>
-                        </Select>
-                      </FormControl>
+                     <FormControl variant="outlined"  size='small' className={classes.formControl}>
+                         <FormField value={title} onChange={handleChange("title")}  variant={"outlined"} size={"small"} className={classes.input}/>
+                     </FormControl>
                      </Grid>
 
                      <div style={{width: '100%',}}>
                       <Typography variant='h6'><small>Period</small></Typography>
                      <Grid item xs='12' className={classes.formGroup}>
                      <Grid item xs='6'>
-                     <FormControl variant="outlined"  size='small' className={classes.formControl}>
-
-                        <Select
-                         className={classes.marginRight}
-                          native
-                          value={state.age}
-                          onChange={handleChange}
-                          label="Age"
-                          inputProps={{
-                            name: 'age',
-                            id: 'outlined-age-native-simple',
-                          }}
-                           input={<BootstrapInput />}
-                        >
-                          <option aria-label="None" value="" />
-                          <option value={10}>Ten</option>
-                          <option value={20}>Twenty</option>
-                          <option value={30}>Thirty</option>
-                        </Select>
-                      </FormControl>
+                         <FormDropdown name={"Month"} option={monthOptions} onChange={handleChange("period_month")}/>
                      </Grid>
                      <Grid item xs='6'>
-                     <FormControl variant="outlined"  size='small' className={classes.formControl}>
-                        <Select
-                          native
-                          value={state.age}
-                          onChange={handleChange}
-                          label="Age"
-                          inputProps={{
-                            name: 'age',
-                            id: 'outlined-age-native-simple',
-                          }}
-                           input={<BootstrapInput />}
-                        >
-                          <option aria-label="None" value="" />
-                          <option value={10}>Ten</option>
-                          <option value={20}>Twenty</option>
-                          <option value={30}>Thirty</option>
-                        </Select>
-                      </FormControl>
+                         <FormDropdown name={"Year"} option={options} onChange={handleChange("period_year")}/>
                      </Grid>
                      </Grid>
                       </div>
@@ -315,47 +389,10 @@ const Demo = () => {
                       <Typography variant='h6'><small>Throught</small></Typography>
                      <Grid item xs='12' className={classes.formGroup}>
                      <Grid item xs='6'>
-                     <FormControl variant="outlined"  size='small' className={classes.formControl}>
-
-                        <Select
-                         className={classes.marginRight}
-                          native
-                          value={state.age}
-                          onChange={handleChange}
-                          label="Age"
-                          inputProps={{
-                            name: 'age',
-                            id: 'outlined-age-native-simple',
-                          }}
-                           input={<BootstrapInput />}
-
-                        >
-                          <option aria-label="None" value="" />
-                          <option value={10}>Ten</option>
-                          <option value={20}>Twenty</option>
-                          <option value={30}>Thirty</option>
-                        </Select>
-                      </FormControl>
+                         {isCheck? <FormDropdown type={true} name={"Month"}option={monthOptions} onChange={handleChange("through_month")}/>:<FormDropdown name={"Month"}option={monthOptions} onChange={handleChange("through_month")}/>}
                      </Grid>
                      <Grid item xs='6'>
-                     <FormControl variant="outlined"  size='small' className={classes.formControl}>
-                        <Select
-                          native
-                          value={state.age}
-                          onChange={handleChange}
-                          label="Age"
-                          inputProps={{
-                            name: 'age',
-                            id: 'outlined-age-native-simple',
-                          }}
-                           input={<BootstrapInput />}
-                        >
-                          <option aria-label="None" value="" />
-                          <option value={10}>Ten</option>
-                          <option value={20}>Twenty</option>
-                          <option value={30}>Thirty</option>
-                        </Select>
-                      </FormControl>
+                         {isCheck? <FormDropdown type={true} name={"Year"} option={options} onChange={handleChange("through_year")}/>:<FormDropdown name={"Year"} option={options} onChange={handleChange("through_year")}/>}
                      </Grid>
                      </Grid>
                       </div>
@@ -363,30 +400,39 @@ const Demo = () => {
                     </Grid>
 
                     <div>
-                      <FormControlLabel control={<Checkbox name="checkedC" color="primary"
-                 />}  label="I currently work here"   />
-                      </div>
+                          <FormControlLabel
+                              control={<Checkbox name="checkedC" color="primary"
+                                                 onChange={handleChange}
+                                                 // checked={check}
+                                                onClick={checkClick}
+                                                 // onChange={e=>setChecked(e.target.value)}
+                              />}
+                              label="I currently work here"
+                          />
+                    </div>
 
                       <div>
                       <Typography variant='h6'><small>Description (Optional)</small></Typography>
-                      <TextareaAutosize style={{width: '100%',}} rowsMin={4}  />
+                      <TextareaAutosize style={{width: '100%',}} rowsMin={4} value={description} onChange={handleChange("description")} />
                       </div>
 
                       <div style={{ textAlign: 'right', marginTop: 15,}}>
                       <Button className={classes.button} size='small' onClick={handleClose}>
                            Cancel
                 </Button>
-                      <Button variant="contained" className={classes.buttonMargin} size='small'>
+                      <Button variant="contained" onClick={saveAndMore} className={classes.buttonMargin} size='small'>
                         <small className={classes.textColor}> Save & Add More</small>
                            </Button>
                       <Button
+                          type="submit"
                           style={{
                               backgroundColor: "#55D5FF",
-
                           }}
                           variant="contained" className={classes.buttonMargin} size='small'>
                       <small> Save</small>
                        </Button>
+                          {errorMessage()}
+                          {successMessage()}
                       </div>
 
                 </form>

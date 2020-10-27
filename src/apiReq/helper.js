@@ -11,3 +11,26 @@ export const getData = () => {
             console.log(e)
         })
 };
+
+
+export const postData =data=>{
+    return axios.post(`${API}/emp/addEmp`,data)
+        .then(res=>{
+            console.log("response",res)
+            return res
+        })
+        .catch(e=>{
+            return e.response
+        })
+}
+
+
+export const deleteData = id =>{
+    return axios.delete(`${API}/emp/delete/${id}`)
+        .then(result=>{
+            return result
+        })
+        .catch(e=>{
+            return e;
+        })
+}
