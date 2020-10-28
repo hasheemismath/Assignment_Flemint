@@ -1,5 +1,5 @@
-import { Backdrop, Button, Checkbox, Divider, Fade, FormControl, FormControlLabel, Grid, IconButton, InputBase,  makeStyles, Modal, Select, TextareaAutosize, TextField, Typography, withStyles } from '@material-ui/core';
-import React, {useEffect, useState} from 'react';
+import { Backdrop, Button, Checkbox, Fade, FormControl, FormControlLabel, Grid,  makeStyles, Modal, TextareaAutosize, Typography } from '@material-ui/core';
+import React, {useState} from 'react';
 import { Link } from 'react-router-dom';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import SideBar from "../sideBar";
@@ -105,15 +105,11 @@ const Demo = () => {
         through:"",
         through_month: "",
         through_year:"",
-        locations: [],
         location: "",
         loading: false,
         error: false,
         isSuccess:false,
-        success:"",
-        createdEmp: "",
-        getaRedirect: false,
-        formData: ""
+        success:""
     });
 
     const [open, setOpen] = React.useState(false);
@@ -140,30 +136,33 @@ const Demo = () => {
 
    const [isCheck,setChecked] = useState(false);
 
+   const dataSubmit = event =>{
+       event.preventDefault();
 
+       setLoading(false);
+
+       values.period = `${values.period_year}-${values.period_month}`;
+
+       if(!is_currently){
+           values.through = `${values.through_year}-${values.through_month}`;
+       }
+       else{
+           values.through="";
+       }
+
+       setValues({...values})
+   }
 
     const handleSubmit = (evt) => {
-        evt.preventDefault();
-
-        setLoading(false);
-
-        values.period = `${values.period_year}-${values.period_month}`;
-
-        if(!is_currently){
-            values.through = `${values.through_year}-${values.through_month}`;
-        }
-        else{
-            values.through="";
-        }
-
-        setValues({...values})
+       dataSubmit(evt)
 
         postData(values)
             .then(data=>{
                 console.log(data)
-                if(data.status===400){
+                if(data.status===400 || data.status===404){
                     setValues({...values,error: true,isSuccess: false})
-                    console.log(error)
+                    setLoading(true);
+
                 }else{
                     setValues({...values,company: "",description: "",title: "",location: "",through: "",period: "",loading: false,success: data.message,error: false,isSuccess: true,is_currently: false})
                     handleClose();
@@ -171,34 +170,19 @@ const Demo = () => {
                 }
             })
             .catch(e=>{
+                setLoading(true);
                 console.log(e)
             })
-
-        console.log(values);
     }
 
     const saveAndMore =(event)=>{
-        event.preventDefault();
-
-        setLoading(false);
-
-        values.period = `${values.period_year}-${values.period_month}`;
-
-        if(!is_currently){
-            values.through = `${values.through_year}-${values.through_month}`;
-        }
-        else{
-            values.through="";
-        }
-
-        setValues({...values})
+        dataSubmit(event)
 
         postData(values)
             .then(data=>{
                 console.log(data)
-                if(data.status===400){
+                if(data.status===400 || data.status===404){
                     setValues({...values,error: true,isSuccess: false})
-                    console.log(error)
                 }else{
                     setValues({...values,company: "",description: "",title: "",location: "",country: "",through: "",period: "",loading: false,success: data.message,error: false,isSuccess: true})}
                     setLoading(true);
@@ -207,8 +191,6 @@ const Demo = () => {
             .catch(e=>{
                 console.log(e)
             })
-
-        console.log(values);
     }
 
     const tableContent = ()=>{
@@ -252,24 +234,15 @@ const Demo = () => {
         countriesArray.push(<option value={ res.value}>{res.label}</option>)
     })
 
-
-
     const {
         company,
         title,
         description,
         location,
-        period,
-        loading,
-        success,
         is_currently,
         error,
         isSuccess,
-        createdEmp,
-        getaRedirect,
-        formData
     } = values;
-
 
     const errorMessage = ()=>{
         if(error){
@@ -282,8 +255,6 @@ const Demo = () => {
             return (<Alert severity="success">Successfully Saved</Alert>)
         }
     }
-
-
    
    return (
     <Grid container  className={classes.container}>
@@ -361,7 +332,7 @@ const Demo = () => {
                         <FormField value={location} onChange={handleChange("location")}  label={"city"} variant={"outlined"} size={"small"} className={classes.input}/>
                      </Grid>
                      <Grid item xs='6'>
-                         <FormDropdown name={"United States"} option={countriesArray}  onChange={handleChange("country")} />
+                         <FormDropdown name={"Country"} option={countriesArray}  onChange={handleChange("country")} />
                      </Grid>
                      </Grid>
                       </div>
@@ -403,9 +374,7 @@ const Demo = () => {
                           <FormControlLabel
                               control={<Checkbox name="checkedC" color="primary"
                                                  onChange={handleChange}
-                                                 // checked={check}
                                                 onClick={checkClick}
-                                                 // onChange={e=>setChecked(e.target.value)}
                               />}
                               label="I currently work here"
                           />

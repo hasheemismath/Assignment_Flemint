@@ -1,9 +1,10 @@
 import {Divider, Grid, IconButton, makeStyles } from '@material-ui/core';
 import React, {useEffect, useState} from 'react';
-
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import {deleteData, getData} from "../apiReq/helper";
 import moment from "moment";
+import Alert from '@material-ui/lab/Alert';
+
 
 const useStyles = makeStyles((theme) => ({
 
@@ -19,7 +20,6 @@ const useStyles = makeStyles((theme) => ({
     tableItem: {
         marginBottom: 15,
         fontSize: 11,
-
     },
     delete: {
         marginLeft: 'auto',
@@ -37,8 +37,9 @@ const Table = () => {
 
     const loadAllData = ()=>{
         getData().then(data => {
-            if (data.error) {
-                setError(data.error);
+            console.log(data)
+            if (!data) {
+                setError(true);
             } else {
                 setData(data.Employments);
             }
@@ -56,6 +57,7 @@ const Table = () => {
                     setError(data.error)
                 }else{
                     loadAllData()
+                    setError(false)
                     console.log(res.data.message)
                 }
 
@@ -65,6 +67,12 @@ const Table = () => {
     const changeDate = (date)=>{
         const setDate= moment(date).format("MMM YYYY");
         return setDate;
+    }
+
+    const errorMessage = ()=>{
+        if(error){
+            return (<Alert severity="error">Something went wrong!</Alert>)
+        }
     }
 
 
@@ -88,7 +96,7 @@ const Table = () => {
             </header>
             <Divider className={classes.divider} />
             <section>
-                {data.map((getData,index)=>{
+                {data.map((getData)=>{
                     return (
                         <Grid container>
                             <Grid item xs={5} md={4}>
@@ -101,9 +109,6 @@ const Table = () => {
                             <Grid item xs={5} md={7}>
                                 <div className={classes.tableItem}>
                                     {getData.is_currently ? changeDate(getData.period) + ' -'+ ` Now` : changeDate(getData.period) + ' - ' + changeDate(getData.through)}
-
-                                    {/*{getData.is_currently ? changeDate(getData.period) - "now" : changeDate(getData.period) - changeDate(getData.through)}*/}
-                                    {/*{changeDate(getData.period)} - {changeDate(getData.through)}*/}
                                 </div>
                             </Grid>
                             <Grid item xs={1}>
@@ -120,6 +125,7 @@ const Table = () => {
                     )
                 })}
             </section>
+            {errorMessage()}
         </div>
     )
 }
