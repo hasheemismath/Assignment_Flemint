@@ -3,11 +3,15 @@ import React, {useEffect, useState} from 'react';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import {deleteData, getData} from "../apiReq/helper";
 import moment from "moment";
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Alert from '@material-ui/lab/Alert';
 
 
 const useStyles = makeStyles((theme) => ({
 
+    root: {
+        marginLeft: theme.spacing(52),
+    },
     buttonNext:{
         textAlign: 'right',
     },
@@ -32,15 +36,20 @@ const useStyles = makeStyles((theme) => ({
 const Table = () => {
     const [data,setData] = useState([]);
     const [error, setError] = useState(false);
+    const [loadings, setLoading] = useState(false);
+
 
     const classes = useStyles();
 
     const loadAllData = ()=>{
+        setLoading(true)
         getData().then(data => {
             console.log(data)
             if (!data) {
                 setError(true);
+                setLoading(false)
             } else {
+                setLoading(false)
                 setData(data.Employments);
             }
         });
@@ -74,6 +83,14 @@ const Table = () => {
             return (<Alert severity="error">Something went wrong!</Alert>)
         }
     }
+    const isLoading = ()=>{
+            return(
+                    <div className={classes.root}>
+                        <CircularProgress />
+                    </div>
+            )
+    }
+
 
 
     return (
@@ -95,36 +112,39 @@ const Table = () => {
                 </Grid>
             </header>
             <Divider className={classes.divider} />
-            <section>
-                {data.map((getData)=>{
-                    return (
-                        <Grid container>
-                            <Grid item xs={5} md={4}>
-                                <div className={classes.tableItem}>
-                                    {getData.title}
-                                    <span className={classes.line}>|</span>
-                                    {getData.company}
-                                </div>
-                            </Grid>
-                            <Grid item xs={5} md={7}>
-                                <div className={classes.tableItem}>
-                                    {getData.is_currently ? changeDate(getData.period) + ' -'+ ` Now` : changeDate(getData.period) + ' - ' + changeDate(getData.through)}
-                                </div>
-                            </Grid>
-                            <Grid item xs={1}>
-                                <div className={classes.tableItem}>
-                                    <div className={classes.buttonNext}>
-                                        <IconButton aria-label="delete" className={classes.delete}>
-                                            <DeleteOutlineIcon fontSize="small" onClick={()=>deleteItem(getData._id)} />
-                                        </IconButton>
+            {loadings? isLoading() :
+                <section>
+                    {data.map((getData)=>{
+                        return (
+                            <Grid container>
+                                <Grid item xs={5} md={4}>
+                                    <div className={classes.tableItem}>
+                                        {getData.title}
+                                        <span className={classes.line}>|</span>
+                                        {getData.company}
                                     </div>
-                                </div>
+                                </Grid>
+                                <Grid item xs={5} md={7}>
+                                    <div className={classes.tableItem}>
+                                        {getData.is_currently ? changeDate(getData.period) + ' -'+ ` Now` : changeDate(getData.period) + ' - ' + changeDate(getData.through)}
+                                    </div>
+                                </Grid>
+                                <Grid item xs={1}>
+                                    <div className={classes.tableItem}>
+                                        <div className={classes.buttonNext}>
+                                            <IconButton aria-label="delete" className={classes.delete}>
+                                                <DeleteOutlineIcon fontSize="small" onClick={()=>deleteItem(getData._id)} />
+                                            </IconButton>
+                                        </div>
+                                    </div>
 
+                                </Grid>
                             </Grid>
-                        </Grid>
-                    )
-                })}
-            </section>
+                        )
+                    })}
+                </section>
+            }
+
             {errorMessage()}
         </div>
     )

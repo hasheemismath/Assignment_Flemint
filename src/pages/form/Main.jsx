@@ -9,6 +9,7 @@ import FormField from "../../common/FormField";
 import {countries} from "../../common/countries";
 import {postData} from "../../apiReq/helper";
 import Alert from '@material-ui/lab/Alert';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles((theme) => ({
 
@@ -253,6 +254,10 @@ const Demo = () => {
             return (<Alert severity="success">Successfully Saved</Alert>)
         }
     }
+
+    const isLoading = ()=>{
+            return (<CircularProgress/>)
+    }
    
    return (
     <Grid container  className={classes.container}>
@@ -277,7 +282,7 @@ const Demo = () => {
                 <small>Add Employment</small>
               </Button>
 
-                {loadings && tableContent()}
+                {loadings? tableContent() : isLoading() }
 
                  <Link to='/' className={classes.linkPrimary}>Skip this step for now</Link>
 
