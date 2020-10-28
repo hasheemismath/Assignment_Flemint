@@ -91,8 +91,6 @@ const Table = () => {
             )
     }
 
-
-
     return (
         <div>
             <header>
