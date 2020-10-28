@@ -1,4 +1,3 @@
-const joi = require('joi');
 const mongose = require('mongoose');
 
 const empSchema =  new mongose.Schema({

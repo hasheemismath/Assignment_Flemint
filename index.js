@@ -8,11 +8,6 @@ const app = express();
 
 const empRoute = require('./route/employment')
 
-
-
-
-
-
 mongoose.connect(process.env.DATABASE, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
