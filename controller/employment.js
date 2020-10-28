@@ -1,22 +1,22 @@
-const {User,validate} = require('../models/employment')
+const {Employment} = require('../models/employment')
 
 exports.getUsers = async (req,res)=>{
-    let limit = req.query.limit ? parseInt(req.query.limit) : 2;
+    let limit = req.query.limit ? parseInt(req.query.limit) : 14;
 
     try{
-        return await User
+        return await Employment
             .find()
             .limit(limit)
-            .exec((err,users)=>{
+            .exec((err,employment)=>{
                 if(err){
                     return res.status(400).send({
-                        error : "No user found"
+                        error : "No employments found"
                     })
                 }
                 res.json({
                     message: 'Fetched User Employments successfully.',
-                    totalItems:users.length,
-                    Employments: users
+                    totalItems:employment.length,
+                    Employments: employment
                 })
             })
     }catch (e) {
@@ -27,20 +27,55 @@ exports.getUsers = async (req,res)=>{
 };
 
 exports.createEmp = async (req,res)=>{
-    const {error} = validate(req.body);
-    if(error) return res.status(400).send(error.details[0].message);
-    let user;
-    user = new User(req.body);
+
+    let employment;
+
+    const{company,description,location,period,country,through,is_currently,title} = req.body;
+    if(!is_currently && !through){
+        return res.status(400).json({
+            error:"through should not empty"
+        })
+    }
+    employment = new Employment({
+        company,
+        country,
+        title,
+        description,
+        location,
+        period,
+        through,
+        is_currently
+    });
 
     //todo: Ref course not found validation
     try{
-        await user.save();
+        await employment.save();
         res.send({
             message: 'Employment created successfully',
-            Employment: user,
+            Employment: employment,
         })
     }catch (e) {
-        res.status(400).send("Something went wrong")
+        res.status(400).send(e.message)
+    }
+
+}
+
+exports.deleteEmp = async (req,res)=>{
+
+    const {id} = req.params;
+
+    try{
+        await Employment.findOneAndDelete({_id:id})
+            .then(result=>{
+                res.status(200).json({
+                    message:"Successfully deleted"
+                })
+            })
+            .catch(e=>{
+                return new Error(e.message)
+            })
+    }catch (e){
+        console.log(e.message)
     }
 
 }

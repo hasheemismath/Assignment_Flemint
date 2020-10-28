@@ -1,7 +1,7 @@
 const joi = require('joi');
 const mongose = require('mongoose');
 
-const userSchema =  new mongose.Schema({
+const empSchema =  new mongose.Schema({
     company:{
         type:String,
         required:true,
@@ -11,8 +11,11 @@ const userSchema =  new mongose.Schema({
     },
     location :{
       type: String,
-      enum : ["United state","Italy","India","Srilanka"],
       required:true
+    },
+    country:{
+        type:String,
+        required:true
     },
     title:{
         type: String,
@@ -26,8 +29,11 @@ const userSchema =  new mongose.Schema({
       required:true
     },
     through:{
-        type: Date,
-        required:true
+        type: Date
+    },
+    is_currently:{
+        type:Boolean,
+        default:false
     },
     description:{
         type: String,
@@ -39,20 +45,8 @@ const userSchema =  new mongose.Schema({
 },{timestamps:true});
 
 
-const User = mongose.model('User', userSchema);
+const Employment = mongose.model('Emps', empSchema);
 
-function validateUser(user) {
-    const schema = {
-        company: joi.string().min(5).max(50).required(),
-        title: joi.string().min(5).max(50).required(),
-        description:joi.string().min(10).max(50).required(),
-        location:joi.string().required(),
-        period:joi.date().required(),
-        through:joi.date().required()
-    };
 
-    return joi.validate(user, schema);
-}
 
-exports.User = User;
-exports.validate = validateUser;
+exports.Employment = Employment;
